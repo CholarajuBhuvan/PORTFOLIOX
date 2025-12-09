@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploy Portfolio - Quick Setup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 800px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .step {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+        
+        .step h3 {
+            display: inline;
+            color: #333;
+            font-size: 1.3rem;
+        }
+        
+        .step-content {
+            margin-top: 1rem;
+            margin-left: 46px;
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        code {
+            background: #e9ecef;
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 5px;
+        }
+        
+        .success {
+            background: #d1e7dd;
+            border-left-color: #198754;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 5px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-top: 2rem;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            background: #764ba2;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        ul {
+            margin-left: 2rem;
+            margin-top: 0.5rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Deploy Your Portfolio</h1>
+        <p class="subtitle">Follow these simple steps to get your portfolio online in minutes!</p>
+        
+        <div class="step">
+            <span class="step-number">1</span>
+            <h3>Update Configuration</h3>
+            <div class="step-content">
+                <p>Open <code>script.js</code> and update lines 3-7 with your usernames:</p>
+                <div class="code-block">
+const CONFIG = {
+    githubUsername: 'your-github-username',
+    leetcodeUsername: 'your-leetcode-username',
+    githubToken: '' // Optional
+};</div>
+                <div class="warning">
+                    <strong>⚠️ Important:</strong> Replace with your actual GitHub and LeetCode usernames!
+                </div>
+            </div>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">2</span>
+            <h3>Choose Deployment Platform</h3>
+            <div class="step-content">
+                <p>Select one of these free hosting options:</p>
+                <ul>
+                    <li><strong>GitHub Pages</strong> (Recommended) - Free, reliable, custom domain support</li>
+                    <li><strong>Netlify</strong> - Drag & drop deployment, instant preview</li>
+                    <li><strong>Vercel</strong> - One-click deploy from GitHub</li>
+                    <li><strong>Firebase Hosting</strong> - Google's hosting platform</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">3</span>
+            <h3>Deploy to GitHub Pages</h3>
+            <div class="step-content">
+                <p><strong>Option A: Using GitHub Website</strong></p>
+                <ol style="margin-left: 1rem;">
+                    <li>Create a new repository named <code>your-username.github.io</code></li>
+                    <li>Upload all portfolio files to the repository</li>
+                    <li>Go to Settings → Pages</li>
+                    <li>Select "main" branch as source</li>
+                    <li>Click Save</li>
+                </ol>
+                
+                <p style="margin-top: 1rem;"><strong>Option B: Using Git Commands</strong></p>
+                <div class="code-block">
+# Initialize git repository
+git init
+git add .
+git commit -m "Initial portfolio commit"
+
+# Create and push to GitHub
+git branch -M main
+git remote add origin https://github.com/your-username/your-username.github.io.git
+git push -u origin main</div>
+                
+                <div class="success">
+                    <strong>✅ Done!</strong> Your portfolio will be live at: <br>
+                    <code>https://your-username.github.io</code>
+                </div>
+            </div>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">4</span>
+            <h3>Test Your Portfolio</h3>
+            <div class="step-content">
+                <p>Verify everything works:</p>
+                <ul>
+                    <li>✅ GitHub projects are loading</li>
+                    <li>✅ LeetCode stats are displaying</li>
+                    <li>✅ All sections are visible</li>
+                    <li>✅ Links are working</li>
+                    <li>✅ Mobile responsive design</li>
+                </ul>
+                <div class="warning">
+                    <strong>Troubleshooting:</strong> If data isn't loading, check:
+                    <ul>
+                        <li>Usernames are correct in config</li>
+                        <li>Profiles are public</li>
+                        <li>Browser console for errors</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">5</span>
+            <h3>Optional: Add Custom Domain</h3>
+            <div class="step-content">
+                <p>To use a custom domain (like yourname.com):</p>
+                <ol style="margin-left: 1rem;">
+                    <li>Buy a domain from any provider</li>
+                    <li>Add a CNAME file to your repository with your domain</li>
+                    <li>Configure DNS settings at your domain provider</li>
+                    <li>Update GitHub Pages settings with custom domain</li>
+                </ol>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 3rem;">
+            <a href="index.html" class="btn">← Back to Portfolio</a>
+            <a href="https://github.com/" target="_blank" class="btn">Go to GitHub →</a>
+        </div>
+        
+        <div style="margin-top: 2rem; padding: 1.5rem; background: #f8f9fa; border-radius: 10px; text-align: center;">
+            <h3 style="color: #667eea; margin-bottom: 1rem;">📚 Need Help?</h3>
+            <p style="color: #666;">
+                Check the <code>README.md</code> file for detailed instructions<br>
+                or open browser console (F12) to see error messages.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
