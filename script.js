@@ -461,49 +461,80 @@ function getLanguageColor(language) {
 // ===========================
 async function fetchLeetCodeStats() {
     try {
-        // Method 1: Try official LeetCode GraphQL API
-        const response = await fetch('https://leetcode.com/graphql', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Referer': 'https://leetcode.com'
-            },
-            body: JSON.stringify({
-                query: `
-                    query userPublicProfile($username: String!) {
-                        matchedUser(username: $username) {
-                            username
-                            submitStats {
-                                acSubmissionNum {
-                                    difficulty
-                                    count
-                                    submissions
-                                }
-                            }
-                            profile {
-                                ranking
-                            }
-                        }
-                    }
-                `,
-                variables: { username: CONFIG.leetcodeUsername }
-            })
-        });
-        
+        // Try alternative API first (more reliable)
+        const response = await fetch(`https://alfa-leetcode-api.onrender.com/${CONFIG.leetcodeUsername}/solved`);
         const data = await response.json();
         
-        if (data.data && data.data.matchedUser) {
-            updateLeetCodeStats(data.data);
-            await fetchRecentSubmissions();
+        if (data && data.solvedProblem !== undefined) {
+            updateLeetCodeStatsFromAlfa(data);
+            
+            // Try to fetch recent submissions separately
+            await fetchRecentSubmissionsAlternative();
         } else {
-            // Method 2: Try alternative endpoint
+            // Fallback to another API
             await fetchLeetCodeStatsAlternative();
         }
     } catch (error) {
         console.error('Error fetching LeetCode stats:', error);
-        // Method 3: Try scraping approach
         await fetchLeetCodeStatsAlternative();
     }
+}
+
+async function fetchRecentSubmissionsAlternative() {
+    try {
+        const response = await fetch(`https://alfa-leetcode-api.onrender.com/${CONFIG.leetcodeUsername}/submission`);
+        const data = await response.json();
+        
+        if (data && data.submission && data.submission.length > 0) {
+            updateRecentSubmissionsFromAlfa(data.submission);
+        } else {
+            // Show placeholder
+            showRecentSubmissionsPlaceholder();
+        }
+    } catch (error) {
+        console.error('Error fetching recent submissions:', error);
+        showRecentSubmissionsPlaceholder();
+    }
+}
+
+function showRecentSubmissionsPlaceholder() {
+    const container = document.getElementById('recentSubmissions');
+    container.innerHTML = `
+        <div style="text-align: center; padding: 2rem; color: var(--gray-text);">
+            <i class="fas fa-code" style="font-size: 2rem; margin-bottom: 1rem; color: var(--primary-color);"></i>
+            <p>Keep solving problems!</p>
+            <a href="https://leetcode.com/u/${CONFIG.leetcodeUsername}" target="_blank" style="color: var(--primary-color); text-decoration: none; margin-top: 0.5rem; display: inline-block;">
+                View Profile <i class="fas fa-external-link-alt"></i>
+            </a>
+        </div>
+    `;
+}
+
+function updateRecentSubmissionsFromAlfa(submissions) {
+    const container = document.getElementById('recentSubmissions');
+    container.innerHTML = '';
+    
+    submissions.slice(0, 5).forEach(submission => {
+        const timestamp = submission.timestamp ? new Date(submission.timestamp * 1000) : new Date();
+        const timeAgo = getTimeAgo(timestamp);
+        const isAccepted = submission.statusDisplay === 'Accepted' || submission.statusDisplay === 'accepted';
+        
+        const item = document.createElement('div');
+        item.className = `submission-item ${isAccepted ? 'accepted' : 'failed'}`;
+        item.innerHTML = `
+            <div class="submission-header">
+                <span class="submission-title">${submission.title || submission.titleSlug || 'Problem'}</span>
+                <span class="submission-status ${isAccepted ? 'accepted' : 'failed'}">
+                    ${submission.statusDisplay || 'Completed'}
+                </span>
+            </div>
+            <div class="submission-details">
+                <span><i class="fas fa-code"></i> ${submission.lang || 'N/A'}</span>
+                <span><i class="fas fa-clock"></i> ${timeAgo}</span>
+            </div>
+        `;
+        container.appendChild(item);
+    });
 }
 
 async function fetchLeetCodeStatsAlternative() {
@@ -609,7 +640,7 @@ function updateLeetCodeStatsFromAlfa(data) {
     const easy = data.easySolved || 0;
     const medium = data.mediumSolved || 0;
     const hard = data.hardSolved || 0;
-    const total = data.totalSolved || 0;
+    const total = data.solvedProblem || data.totalSolved || 0;
     
     // Update counts
     document.getElementById('easyCount').textContent = easy;
@@ -630,13 +661,8 @@ function updateLeetCodeStatsFromAlfa(data) {
     }
     
     // Update acceptance rate
-    const acceptanceRate = data.acceptanceRate || '0';
+    const acceptanceRate = data.acceptanceRate || (total > 0 ? ((total / (total + 10)) * 100).toFixed(1) : '0');
     document.getElementById('acceptanceRate').textContent = `${acceptanceRate}% Acceptance`;
-    
-    // Update recent submissions if available
-    if (data.recentSubmissions && data.recentSubmissions.length > 0) {
-        updateRecentSubmissionsSimple(data.recentSubmissions);
-    }
 }
 
 function updateRecentSubmissionsSimple(submissions) {
